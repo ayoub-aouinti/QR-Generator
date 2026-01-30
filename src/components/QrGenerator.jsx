@@ -2,6 +2,7 @@ import { useState } from "react";
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   Download,
   FileText,
@@ -14,6 +15,7 @@ import confetti from "canvas-confetti";
 const MotionDiv = motion.div;
 
 const QrGenerator = () => {
+  const { t } = useTranslation();
   const [text, setText] = useState("");
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -69,11 +71,11 @@ const QrGenerator = () => {
     const y = (pdf.internal.pageSize.getHeight() - pdfHeight) / 2;
 
     pdf.setFontSize(22);
-    pdf.text("Generated QR Code", pdfWidth / 2, 40, { align: "center" });
+    pdf.text(t('pdf_header'), pdfWidth / 2, 40, { align: "center" });
     pdf.addImage(qrDataUrl, "PNG", x, y, 100, pdfHeight);
     pdf.setFontSize(10);
     pdf.setTextColor(150);
-    pdf.text(`Source: ${text}`, pdfWidth / 2, y + 110, { align: "center" });
+    pdf.text(t('source_text', { text }), pdfWidth / 2, y + pdfHeight + 10, { align: "center" });
 
     pdf.save(`qrcode-${Date.now()}.pdf`);
   };
@@ -81,15 +83,15 @@ const QrGenerator = () => {
   return (
     <div className="glass-card">
       <div style={{ textAlign: "center" }}>
-        <span className="badge">Free & Unlimited</span>
-        <h1 className="title">QR Studio</h1>
-        <p className="subtitle">Instant, high-quality QR codes for anything.</p>
+        <span className="badge">{t('badge')}</span>
+        <h1 className="title">{t('title')}</h1>
+        <p className="subtitle">{t('subtitle')}</p>
       </div>
 
       <div className="input-container">
         <input
           type="text"
-          placeholder="Enter URL or text here..."
+          placeholder={t('placeholder')}
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && generateQRCode()}
@@ -114,7 +116,7 @@ const QrGenerator = () => {
           ) : (
             <QrIcon size={20} />
           )}
-          {isGenerating ? "Generating..." : "Generate QR Code"}
+          {isGenerating ? t('generating') : t('generate')}
         </button>
       </div>
 
@@ -142,11 +144,11 @@ const QrGenerator = () => {
             <div className="actions">
               <button className="btn btn-secondary" onClick={downloadPNG}>
                 <ImageIcon size={18} />
-                Download PNG
+                {t('download_png')}
               </button>
               <button className="btn btn-secondary" onClick={downloadPDF}>
                 <FileText size={18} />
-                Export PDF
+                {t('export_pdf')}
               </button>
             </div>
           </MotionDiv>
@@ -162,7 +164,7 @@ const QrGenerator = () => {
             fontSize: "0.9rem",
           }}
         >
-          <p>Enter a link to see the magic happen</p>
+          <p>{t('hint')}</p>
         </div>
       )}
     </div>

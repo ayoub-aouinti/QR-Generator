@@ -128,18 +128,17 @@ const QrGenerator = () => {
             exit={{ opacity: 0, scale: 0.9 }}
             className="qr-container"
           >
-            <img
-              src={qrDataUrl}
-              alt="Generated QR"
-              style={{
-                width: "250px",
-                height: "250px",
-                borderRadius: "16px",
-                boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
-                background: "white",
-                padding: "10px",
-              }}
-            />
+            <div className="qr-image-wrapper">
+                <img
+                    src={qrDataUrl}
+                    alt="Generated QR"
+                    style={{
+                        width: "220px",
+                        height: "220px",
+                        display: "block"
+                    }}
+                />
+            </div>
 
             <div className="actions">
               <button className="btn btn-secondary" onClick={downloadPNG}>

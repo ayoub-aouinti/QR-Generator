@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import QrGenerator from './components/QrGenerator';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
 
 function App() {
@@ -8,7 +9,16 @@ function App() {
 
   return (
     <div className="container" style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-      <LanguageSwitcher />
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        gap: '1rem',
+        marginBottom: '1.5rem'
+      }}>
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
       <QrGenerator />
       
       <footer style={{ 

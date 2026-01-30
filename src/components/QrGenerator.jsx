@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,15 +8,15 @@ import {
   Image as ImageIcon,
   QrCode as QrIcon,
   RefreshCw,
-  Check,
 } from "lucide-react";
 import confetti from "canvas-confetti";
+
+const MotionDiv = motion.div;
 
 const QrGenerator = () => {
   const [text, setText] = useState("");
   const [qrDataUrl, setQrDataUrl] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const canvasRef = useRef(null);
 
   const generateQRCode = async () => {
     if (!text.trim()) return;
@@ -62,15 +62,15 @@ const QrGenerator = () => {
     const pdf = new jsPDF();
     const imgProps = pdf.getImageProperties(qrDataUrl);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    const pdfHeight = (imgProps.height * 100) / imgProps.width;
 
     // Center the QR code on the page
     const x = (pdfWidth - 100) / 2;
-    const y = (pdf.internal.pageSize.getHeight() - 100) / 2;
+    const y = (pdf.internal.pageSize.getHeight() - pdfHeight) / 2;
 
     pdf.setFontSize(22);
     pdf.text("Generated QR Code", pdfWidth / 2, 40, { align: "center" });
-    pdf.addImage(qrDataUrl, "PNG", x, y, 100, 100);
+    pdf.addImage(qrDataUrl, "PNG", x, y, 100, pdfHeight);
     pdf.setFontSize(10);
     pdf.setTextColor(150);
     pdf.text(`Source: ${text}`, pdfWidth / 2, y + 110, { align: "center" });
@@ -120,7 +120,7 @@ const QrGenerator = () => {
 
       <AnimatePresence>
         {qrDataUrl && !isGenerating && (
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9 }}
@@ -149,7 +149,7 @@ const QrGenerator = () => {
                 Export PDF
               </button>
             </div>
-          </motion.div>
+          </MotionDiv>
         )}
       </AnimatePresence>
 

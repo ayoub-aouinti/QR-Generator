@@ -13,7 +13,7 @@ const resources = {
       "generating": "Generating...",
       "download_png": "Download PNG",
       "export_pdf": "Export PDF",
-      "footer_text": "© {{year}} QR Studio • Built with Passion",
+      "footer_text": "© {{year}} QR Studio • Built with Passion By Ayoub Aouinti",
       "hint": "Enter a link to see the magic happen",
       "source_text": "Source: {{text}}",
       "pdf_header": "Generated QR Code"
@@ -29,7 +29,7 @@ const resources = {
       "generating": "Génération...",
       "download_png": "Télécharger PNG",
       "export_pdf": "Exporter PDF",
-      "footer_text": "© {{year}} QR Studio • Construit avec Passion",
+      "footer_text": "© {{year}} QR Studio • Construit avec Passion par Ayoub Aouinti",
       "hint": "Entrez un lien pour voir la magie opérer",
       "source_text": "Source: {{text}}",
       "pdf_header": "Code QR Généré"
@@ -45,7 +45,7 @@ const resources = {
       "generating": "جاري الإنشاء...",
       "download_png": "تحميل PNG",
       "export_pdf": "تصدير PDF",
-      "footer_text": "© {{year}} استوديو QR • تم بناؤه بشغف",
+      "footer_text": "© {{year}} استوديو QR • تم بناؤه بشغف من قبل أيوب عوينتي",
       "hint": "أدخل رابطًا لترى السحر يحدث",
       "source_text": "المصدر: {{text}}",
       "pdf_header": "رمز QR المولد"

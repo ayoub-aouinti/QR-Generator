@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,11 +42,14 @@ const QrGenerator = () => {
   
   const fileInputRef = useRef(null);
 
-  const generateQRCode = useCallback(async () => {
+  const generateQRCode = async () => {
     if (!text.trim()) return;
 
     setIsGenerating(true);
     try {
+      // Add a small delay for "premium" feel & animation
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       const logoUrl = customLogo || selectedLogo;
       
       const options = {
@@ -113,30 +116,19 @@ const QrGenerator = () => {
       const dataUrl = canvas.toDataURL("image/png");
       setQrDataUrl(dataUrl);
 
-      // Simple confetti to celebrate
-      if (text.length > 5) { // Only for "real" generations
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.7 },
-          colors: [fgColor, "#6366f1", "#ec4899"],
-        });
-      }
+      // Show confetti celebration
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: [fgColor, "#6366f1", "#ec4899"],
+      });
     } catch (err) {
       console.error("QR Generation Error:", err);
     } finally {
       setIsGenerating(false);
     }
-  }, [text, fgColor, bgColor, selectedLogo, customLogo]);
-
-  // Auto-generate when options change
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      generateQRCode();
-    }, 400); 
-
-    return () => clearTimeout(timer);
-  }, [generateQRCode]);
+  };
 
   const handleCustomLogoUpload = (e) => {
     const file = e.target.files[0];

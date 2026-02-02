@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import QRCode from "qrcode";
 import { jsPDF } from "jspdf";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,14 +18,14 @@ import confetti from "canvas-confetti";
 const MotionDiv = motion.div;
 
 const FAMOUS_SITE_LOGOS = [
-  { name: "Google", url: "https://www.google.com/s2/favicons?domain=google.com&sz=128" },
-  { name: "Facebook", url: "https://www.google.com/s2/favicons?domain=facebook.com&sz=128" },
-  { name: "Instagram", url: "https://www.google.com/s2/favicons?domain=instagram.com&sz=128" },
-  { name: "Twitter", url: "https://www.google.com/s2/favicons?domain=twitter.com&sz=128" },
-  { name: "LinkedIn", url: "https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" },
-  { name: "YouTube", url: "https://www.google.com/s2/favicons?domain=youtube.com&sz=128" },
-  { name: "WhatsApp", url: "https://www.google.com/s2/favicons?domain=whatsapp.com&sz=128" },
-  { name: "GitHub", url: "https://www.google.com/s2/favicons?domain=github.com&sz=128" },
+  { name: "Google", url: "https://unavatar.io/google.com" },
+  { name: "Facebook", url: "https://unavatar.io/facebook.com" },
+  { name: "Instagram", url: "https://unavatar.io/instagram.com" },
+  { name: "Twitter", url: "https://unavatar.io/twitter.com" },
+  { name: "LinkedIn", url: "https://unavatar.io/linkedin.com" },
+  { name: "YouTube", url: "https://unavatar.io/youtube.com" },
+  { name: "WhatsApp", url: "https://unavatar.io/whatsapp.com" },
+  { name: "GitHub", url: "https://unavatar.io/github.com" },
 ];
 
 const QrGenerator = () => {
@@ -42,18 +42,15 @@ const QrGenerator = () => {
   
   const fileInputRef = useRef(null);
 
-  const generateQRCode = async () => {
+  const generateQRCode = useCallback(async () => {
     if (!text.trim()) return;
 
     setIsGenerating(true);
     try {
-      // Add a small delay for "premium" feel & animation
-      await new Promise((resolve) => setTimeout(resolve, 600));
-
       const logoUrl = customLogo || selectedLogo;
       
       const options = {
-        width: 600, // Higher resolution for better quality
+        width: 1000, // Very high resolution for perfect quality
         margin: 2,
         color: {
           dark: fgColor,
@@ -75,23 +72,40 @@ const QrGenerator = () => {
         await new Promise((resolve) => {
           logo.onload = resolve;
           logo.onerror = () => {
-              console.error("Failed to load logo");
-              resolve(); // Still finish generating without logo
+              console.error("Failed to load logo from:", logoUrl);
+              resolve(); 
           };
         });
 
         if (logo.complete && logo.naturalWidth > 0) {
-            const logoSize = canvas.width * 0.2;
+            const logoSize = canvas.width * 0.15; // Reduced logo size
             const x = (canvas.width - logoSize) / 2;
             const y = (canvas.height - logoSize) / 2;
 
-            // Draw white background for logo
+            // Draw background for logo to clear QR modules behind it
             ctx.fillStyle = bgColor;
+            
+            // Draw a rounded rectangle for the logo background
+            const padding = logoSize * 0.1;
+            const bgX = x - padding;
+            const bgY = y - padding;
+            const bgSize = logoSize + (padding * 2);
+            const radius = padding * 1.5;
+
             ctx.beginPath();
-            ctx.roundRect(x - 5, y - 5, logoSize + 10, logoSize + 10, 10);
+            ctx.moveTo(bgX + radius, bgY);
+            ctx.lineTo(bgX + bgSize - radius, bgY);
+            ctx.quadraticCurveTo(bgX + bgSize, bgY, bgX + bgSize, bgY + radius);
+            ctx.lineTo(bgX + bgSize, bgY + bgSize - radius);
+            ctx.quadraticCurveTo(bgX + bgSize, bgY + bgSize, bgX + bgSize - radius, bgY + bgSize);
+            ctx.lineTo(bgX + radius, bgY + bgSize);
+            ctx.quadraticCurveTo(bgX, bgY + bgSize, bgX, bgY + bgSize - radius);
+            ctx.lineTo(bgX, bgY + radius);
+            ctx.quadraticCurveTo(bgX, bgY, bgX + radius, bgY);
+            ctx.closePath();
             ctx.fill();
 
-            // Draw logo
+            // Draw logo in the center
             ctx.drawImage(logo, x, y, logoSize, logoSize);
         }
       }
@@ -99,18 +113,30 @@ const QrGenerator = () => {
       const dataUrl = canvas.toDataURL("image/png");
       setQrDataUrl(dataUrl);
 
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ["#6366f1", "#ec4899", "#10b981"],
-      });
+      // Simple confetti to celebrate
+      if (text.length > 5) { // Only for "real" generations
+        confetti({
+          particleCount: 50,
+          spread: 60,
+          origin: { y: 0.7 },
+          colors: [fgColor, "#6366f1", "#ec4899"],
+        });
+      }
     } catch (err) {
       console.error("QR Generation Error:", err);
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [text, fgColor, bgColor, selectedLogo, customLogo]);
+
+  // Auto-generate when options change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      generateQRCode();
+    }, 400); 
+
+    return () => clearTimeout(timer);
+  }, [generateQRCode]);
 
   const handleCustomLogoUpload = (e) => {
     const file = e.target.files[0];
@@ -263,18 +289,7 @@ const QrGenerator = () => {
       </div>
 
       <AnimatePresence mode="wait">
-        {isGenerating ? (
-            <MotionDiv
-                key="loader"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="loader-container"
-            >
-                <RefreshCw className="animate-spin" size={40} color="var(--primary)" />
-                <p style={{ color: "var(--text-muted)" }}>{t('generating')}</p>
-            </MotionDiv>
-        ) : qrDataUrl && (
+        {qrDataUrl && !isGenerating ? (
           <MotionDiv
             key="qr"
             initial={{ opacity: 0, y: 20 }}
@@ -305,7 +320,18 @@ const QrGenerator = () => {
               </button>
             </div>
           </MotionDiv>
-        )}
+        ) : isGenerating ? (
+            <MotionDiv
+                key="loader"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="loader-container"
+            >
+                <RefreshCw className="animate-spin" size={40} color="var(--primary)" />
+                <p style={{ color: "var(--text-muted)" }}>{t('generating')}</p>
+            </MotionDiv>
+        ) : null}
       </AnimatePresence>
 
       {!qrDataUrl && !isGenerating && (

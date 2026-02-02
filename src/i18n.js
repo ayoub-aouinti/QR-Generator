@@ -16,7 +16,16 @@ const resources = {
       "footer_text": "© {{year}} QR Studio • Built with Passion By Ayoub Aouinti",
       "hint": "Enter a link to see the magic happen",
       "source_text": "Source: {{text}}",
-      "pdf_header": "Generated QR Code"
+      "pdf_header": "Generated QR Code",
+      "customize": "Customize",
+      "colors": "Colors",
+      "fg_color": "Foreground",
+      "bg_color": "Background",
+      "logo": "Logo",
+      "famous_sites": "Famous Sites",
+      "custom_logo": "Custom Logo",
+      "none": "None",
+      "upload_hint": "Click to upload custom logo"
     }
   },
   fr: {
@@ -32,7 +41,16 @@ const resources = {
       "footer_text": "© {{year}} QR Studio • Construit avec Passion par Ayoub Aouinti",
       "hint": "Entrez un lien pour voir la magie opérer",
       "source_text": "Source: {{text}}",
-      "pdf_header": "Code QR Généré"
+      "pdf_header": "Code QR Généré",
+      "customize": "Personnaliser",
+      "colors": "Couleurs",
+      "fg_color": "Premier Plan",
+      "bg_color": "Arrière-Plan",
+      "logo": "Logo",
+      "famous_sites": "Sites Célèbres",
+      "custom_logo": "Logo Personnalisé",
+      "none": "Aucun",
+      "upload_hint": "Cliquez pour uploader un logo"
     }
   },
   ar: {
@@ -48,7 +66,16 @@ const resources = {
       "footer_text": "© {{year}} استوديو QR • تم بناؤه بشغف من قبل أيوب عوينتي",
       "hint": "أدخل رابطًا لترى السحر يحدث",
       "source_text": "المصدر: {{text}}",
-      "pdf_header": "رمز QR المولد"
+      "pdf_header": "رمز QR المولد",
+      "customize": "تخصيص",
+      "colors": "الألوان",
+      "fg_color": "اللون الأمامي",
+      "bg_color": "اللون الخلفي",
+      "logo": "شعار",
+      "famous_sites": "مواقع شهيرة",
+      "custom_logo": "شعار مخصص",
+      "none": "بدون",
+      "upload_hint": "انقر لتحميل شعار مخصص"
     }
   }
 };
